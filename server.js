@@ -26,7 +26,7 @@ app.use(express.static("public"));
 // Set mongoose to leverage built in JavaScript ES6 Promises
 // Connect to the Mongo DB
 mongoose.Promise = Promise;
-mongoose.connect("mongodb://localhost/newsscraper", {
+mongoose.connect("mongodb://localhost/scraper", {
   useMongoClient: true
 });
 
@@ -45,6 +45,7 @@ app.get("/scrape", function(req, res) {
 
       result.title = $(element).children().text();
       result.link = $(element).attr("href");
+      result.snippet = $(element).siblings('p').text().trim();
 
       console.log(result);
       

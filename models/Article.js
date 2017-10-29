@@ -12,6 +12,10 @@ var ArticleSchema = new Schema({
     type: String,
     required: true
   },
+
+  snippet: {
+    type: String,
+  },
   
   note: {
     type: Schema.Types.ObjectId,

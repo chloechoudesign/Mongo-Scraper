@@ -2,11 +2,9 @@
 $.getJSON("/articles", function(data) {
   // For each one
   for (var i = 0; i < data.length; i++) {
-    // Display the apropos information on the page
-    // $("#articles").append(
-    // "<p data-id='" + data[i]._id + "'>" + data[i].title + "</p>");
     $("#articles").append(
-      "<div class='col-sm-4' style='margin-bottom:30px;'><div class='card'><div class='card-body'><h6>" + data[i].title + "</h6><hr><a href='#' class='btn-comment btn btn-outline-primary btn-sm'>Comment</a>");
+      "<div class='col-sm-4' style='margin-bottom:60px;'><div class='card'><div class='card-body'><a class='title-link' href='" + data[i].link +"'><h5>" + data[i].title + "</h5></a><hr><p class='card-text'>" + data[i].snippet + "</p><a href='#' class='btn-comment btn btn-outline-primary btn-sm' style='margin-right:10px;'>Save</a><a href='#' class='btn-comment btn btn-outline-primary btn-sm'>Comment</a></div></div></div>"
+    );
   }
 
   console.log(data);
