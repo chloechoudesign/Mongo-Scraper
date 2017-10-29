@@ -5,19 +5,17 @@ var logger = require("morgan");
 var mongoose = require("mongoose");
 
 // Scraping tools
-var axios = require("axios");
 var cheerio = require("cheerio");
+var request = require("request");
 
 // Require all models
 var db = require("./models");
 
-var PORT = 3000;
-
 // Initialize Express
+var PORT = 3000;
 var app = express();
 
 // Configure middleware
-
 // Use morgan logger for logging requests
 app.use(logger("dev"));
 // Use body-parser for handling form submissions
@@ -28,34 +26,32 @@ app.use(express.static("public"));
 // Set mongoose to leverage built in JavaScript ES6 Promises
 // Connect to the Mongo DB
 mongoose.Promise = Promise;
-mongoose.connect("mongodb://localhost/week18Populater", {
+mongoose.connect("mongodb://localhost/newsscraper", {
   useMongoClient: true
 });
 
 // Routes
 
-// A GET route for scraping the echojs website
+// A GET route for scraping the invision blog
 app.get("/scrape", function(req, res) {
   
-  axios.get("http://www.echojs.com/").then(function(response) {
+  request("https://www.invisionapp.com/blog", function(error, response, html) {
     
-    var $ = cheerio.load(response.data);
-    
-    $("article h2").each(function(i, element) {
-     
+    var $ = cheerio.load(html);
+
+    $(".title-link").each(function(i, element) {
+
       var result = {};
 
-      result.title = $(this)
-        .children("a")
-        .text();
-      result.link = $(this)
-        .children("a")
-        .attr("href");
+      result.title = $(element).children().text();
+      result.link = $(element).attr("href");
 
+      console.log(result);
+      
       db.Article
         .create(result)
         .then(function(dbArticle) {
-          res.send("Scrape Complete");
+          res.json(dbArticle);
         })
         .catch(function(err) {
           res.json(err);
@@ -66,31 +62,29 @@ app.get("/scrape", function(req, res) {
 
 // Route for getting all Articles from the db
 app.get("/articles", function(req, res) {
-
+  
   db.Article
-  .find({})
-  .then(function(dbArticle) {
-    res.json(dbArticle);
-  })
-  .catch(function(err) {
-    res.json(err);
-  });
-
+    .find({})
+    .then(function(dbArticle) {
+      res.json(dbArticle);
+    })
+    .catch(function(err) {
+      res.json(err);
+    });
 });
 
 // Route for grabbing a specific Article by id, populate it with it's note
 app.get("/articles/:id", function(req, res) {
 
   db.Article
-  .findOne({ _id: req.params.id })
-  .populate("note")
-  .then(function(dbArticle) {
-    res.json(dbArticle);
-  })
-  .catch(function(err) {
-    res.json(err);
-  });
- 
+    .findOne({ _id: req.params.id })
+    .populate("note")
+    .then(function(dbArticle) {
+      res.json(dbArticle);
+    })
+    .catch(function(err) {
+      res.json(err);
+    });
 });
 
 // Route for saving/updating an Article's associated Note
@@ -107,7 +101,6 @@ app.post("/articles/:id", function(req, res) {
     .catch(function(err) {
       res.json(err);
     });
-
 });
 
 // Start the server

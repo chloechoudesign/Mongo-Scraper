@@ -3,14 +3,18 @@ $.getJSON("/articles", function(data) {
   // For each one
   for (var i = 0; i < data.length; i++) {
     // Display the apropos information on the page
+    // $("#articles").append(
+    // "<p data-id='" + data[i]._id + "'>" + data[i].title + "</p>");
     $("#articles").append(
-    "<p data-id='" + data[i]._id + "'><b>" + data[i].title + "</b></p><button class='btn btn-sm btn-primary btn-bookmark'>Bookmark</button>");
+      "<div class='col-sm-4' style='margin-bottom:30px;'><div class='card'><div class='card-body'><h6>" + data[i].title + "</h6><hr><a href='#' class='btn-comment btn btn-outline-primary btn-sm'>Comment</a>");
   }
+
+  console.log(data);
 });
 
 
 // Whenever someone clicks a p tag
-$(document).on("click", "p", function() {
+$(document).on("click", "btn-comment", function() {
   // Empty the notes from the note section
   $("#notes").empty();
   // Save the id from the p tag
