@@ -9,7 +9,7 @@ $.getJSON("/articles", function(data) {
   console.log(data);
 });
 
-
+// When you click the note button
 $(document).on("click", ".btn-note", function() {
   
   $(".modal-title").empty();
@@ -28,16 +28,10 @@ $(document).on("click", ".btn-note", function() {
 
       $(".modal-title").append("<h5>" + data.title + "</h5>");
       $(".input").append("<textarea id='bodyinput' name='body'></textarea>");
-      $(".input").append("<button data-id='" + data._id + "' id='savenote' class='btn btn-primary btn-sm' style='margin-top:20px;'>Save Note</button>");
-
-      
-
-
+      $(".input").append("<button data-id='" + data._id + "' id='savenote' class='btn btn-primary btn-sm' style='margin-top:20px;'data-dismiss='modal'>Save Note</button>");
 
       // If there's a note in the article
       if (data.note) {
-        // Place the title of the note in the title input
-        $("#titleinput").val(data.note.title);
         // Place the body of the note in the body textarea
         $("#bodyinput").val(data.note.body);
       }
@@ -48,27 +42,25 @@ $(document).on("click", ".btn-note", function() {
 $(document).on("click", "#savenote", function() {
   // Grab the id associated with the article from the submit button
   var thisId = $(this).attr("data-id");
+  // console.log(thisId);
 
   // Run a POST request to change the note, using what's entered in the inputs
   $.ajax({
     method: "POST",
     url: "/articles/" + thisId,
     data: {
-      // Value taken from title input
-      title: $("#titleinput").val(),
       // Value taken from note textarea
       body: $("#bodyinput").val()
     }
   })
-    // With that done
+  
     .done(function(data) {
       // Log the response
       console.log(data);
       // Empty the notes section
-      $("#notes").empty();
+      // $("#bodyinput").empty();
     });
 
-  // Also, remove the values entered in the input and textarea for note entry
-  $("#titleinput").val("");
+  // Remove the values entered in the input and textarea for note entry
   $("#bodyinput").val("");
 });
