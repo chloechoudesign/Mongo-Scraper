@@ -1,15 +1,15 @@
 $.getJSON("/saved", function(data) {
   for (var i = 0; i < data.length; i++) {
 
-    $("#articles").append(
-      "<div class='col-sm-4' style='margin-bottom:60px;'><div class='card'><div class='card-body'><a class='title-link' href='" + data[i].link +"'><h5>" + data[i].title + "</h5></a><hr><p class='card-text'>" + data[i].snippet + "</p><button data-id='" + data[i]._id + "' class='btn-note btn btn-outline-primary btn-sm' data-toggle='modal' data-target='#myModal' style='margin-right:10px;'>Note</button><button class='btn btn-outline-danger btn-sm'>Delete</button></div></div></div>"
+  $("#articles").append(
+      "<div class='col-sm-4' style='margin-bottom:60px;'><div class='card'><div class='card-body'><a class='title-link' href='" + data[i].link +"'><h5>" + data[i].title + "</h5></a><hr><p class='card-text'>" + data[i].snippet + "</p><button data-id='" + data[i]._id + "' class='btn-note btn btn-outline-primary btn-sm' data-toggle='modal' data-target='#myModal' style='margin-right:10px;'>Note</button><button id='btn-delete' data-id='" + data[i]._id + "' class='btn btn-outline-danger btn-sm'>Delete</button></div></div></div>"
     );
 }
 
   console.log(data);
 });
 
-// When you click the note button
+// When you click the Note button
 $(document).on("click", ".btn-note", function() {
   
   $(".modal-title").empty();
@@ -38,7 +38,9 @@ $(document).on("click", ".btn-note", function() {
     });
 });
 
-// When you click the savenote button
+
+
+// When you click the Save Note button
 $(document).on("click", "#savenote", function() {
   // Grab the id associated with the article from the submit button
   var thisId = $(this).attr("data-id");
@@ -63,4 +65,23 @@ $(document).on("click", "#savenote", function() {
 
   // Remove the values entered in the input and textarea for note entry
   $("#bodyinput").val("");
+});
+
+
+// When you click the Delete button
+$(document).on("click", "#btn-delete", function() {
+  
+  var thisId = $(this).attr("data-id");
+  console.log(thisId);
+
+  $.ajax({
+    method: "PUT",
+    url: "/delete/" + thisId,
+   
+  })
+  
+  .done(function(data) {
+      console.log(data);
+      location.reload();
+  });
 });
