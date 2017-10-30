@@ -31,6 +31,9 @@ mongoose.connect("mongodb://localhost/scraper", {
 });
 
 // Routes
+app.get("/", function(req, res) {
+  res.send(index.html);
+});
 
 // A GET route for scraping the invision blog
 app.get("/scrape", function(req, res) {
@@ -103,6 +106,34 @@ app.post("/articles/:id", function(req, res) {
       res.json(err);
     });
 });
+
+// Route for saving article
+app.put("/saved/:id", function(req, res) {
+
+  db.Article
+    .findByIdAndUpdate({ _id: req.params.id }, { $set: { isSaved: true }})
+    .then(function(dbArticle) {
+      res.json(dbArticle);
+    })
+    .catch(function(err) {
+      res.json(err);
+    });
+});
+
+app.get("/saved", function(req, res) {
+
+  db.Article
+    .find({ isSaved: true })
+    .then(function(dbArticle) {
+      res.json(dbArticle);
+    })
+    .catch(function(err) {
+      res.json(err);
+    });
+});
+
+
+
 
 // Start the server
 app.listen(PORT, function() {
