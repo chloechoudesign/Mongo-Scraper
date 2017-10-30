@@ -12,7 +12,7 @@ $.getJSON("/articles", function(data) {
 
 // When you click the Fetch button
 $(document).on("click", ".btn-fetch", function() {
-  alert('New Articles Added!');
+  alert('Articles up-to-date!');
 
   $.ajax({
     method: "GET",
