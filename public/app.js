@@ -9,6 +9,22 @@ $.getJSON("/articles", function(data) {
   console.log(data);
 });
 
+
+// When you click the Fetch button
+$(document).on("click", ".btn-fetch", function() {
+  alert('New Articles Added!');
+
+  $.ajax({
+    method: "GET",
+    url: "/scrape"
+  })
+    .done(function(data) {
+      location.reload();
+    });
+});
+
+
+
 // When you click the Note button
 $(document).on("click", ".btn-note", function() {
   

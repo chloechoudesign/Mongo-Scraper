@@ -26,7 +26,7 @@ app.use(express.static("public"));
 // Set mongoose to leverage built in JavaScript ES6 Promises
 // Connect to the Mongo DB
 mongoose.Promise = Promise;
-mongoose.connect("mongodb://localhost/scraper", {
+mongoose.connect("mongodb://localhost/invisionscraper", {
   useMongoClient: true
 });
 
@@ -43,24 +43,36 @@ app.get("/scrape", function(req, res) {
     var $ = cheerio.load(html);
 
     $(".title-link").each(function(i, element) {
+      
+      var title = $(element).children().text();
+      var link = $(element).attr("href");
+      var snippet = $(element).siblings('p').text().trim();
 
-      var result = {};
-
-      result.title = $(element).children().text();
-      result.link = $(element).attr("href");
-      result.snippet = $(element).siblings('p').text().trim();
-
+      var result = {
+        title: title,
+        link: link,
+        snippet: snippet,
+        isSaved: false
+      }
+      
       console.log(result);
       
-      db.Article
-        .create(result)
-        .then(function(dbArticle) {
-          res.json(dbArticle);
-        })
-        .catch(function(err) {
+      db.Article.findOne({title:title}).then(function(data) {
+        
+        console.log(data);
+
+        if(data === null) {
+
+          db.Article.create(result).then(function(dbArticle) {
+            res.json(dbArticle);
+          });
+        }
+      }).catch(function(err) {
           res.json(err);
-        });
+      });
+
     });
+
   });
 });
 
