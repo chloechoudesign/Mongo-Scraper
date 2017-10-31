@@ -3,6 +3,7 @@ var express = require("express");
 var bodyParser = require("body-parser");
 var logger = require("morgan");
 var mongoose = require("mongoose");
+var moment = require("moment");
 
 // Scraping tools
 var cheerio = require("cheerio");
@@ -26,7 +27,7 @@ app.use(express.static("public"));
 // Set mongoose to leverage built in JavaScript ES6 Promises
 // Connect to the Mongo DB
 mongoose.Promise = Promise;
-mongoose.connect("mongodb://localhost/invisionscraper", {
+mongoose.connect("mongodb://localhost/mongoscraper", {
   useMongoClient: true
 });
 
@@ -47,11 +48,13 @@ app.get("/scrape", function(req, res) {
       var title = $(element).children().text();
       var link = $(element).attr("href");
       var snippet = $(element).siblings('p').text().trim();
+      var articleCreated = moment().format("YYYY MM DD hh:mm:ss");
 
       var result = {
         title: title,
         link: link,
         snippet: snippet,
+        articleCreated: articleCreated,
         isSaved: false
       }
       
@@ -81,6 +84,7 @@ app.get("/articles", function(req, res) {
   
   db.Article
     .find({})
+    .sort({articleCreated:-1})
     .then(function(dbArticle) {
       res.json(dbArticle);
     })
