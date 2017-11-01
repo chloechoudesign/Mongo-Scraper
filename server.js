@@ -16,6 +16,13 @@ var db = require("./models");
 var PORT = 3000;
 var app = express();
 
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
+
+mongoose.Promise = Promise;
+mongoose.connect(MONGODB_URI, {
+  useMongoClient: true
+});
+
 // Configure middleware
 // Use morgan logger for logging requests
 app.use(logger("dev"));
