@@ -13,16 +13,11 @@ var request = require("request");
 var db = require("./models");
 
 // Initialize Express
-var PORT = process.env || 3000;
+var PORT = process.env.PORT || 3000;
 
 var app = express();
 
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
 
-mongoose.Promise = Promise;
-mongoose.connect(MONGODB_URI, {
-  useMongoClient: true
-});
 
 // Configure middleware
 // Use morgan logger for logging requests
@@ -170,7 +165,12 @@ app.put("/delete/:id", function(req, res) {
     });
 });
 
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
 
+mongoose.Promise = Promise;
+mongoose.connect(MONGODB_URI, {
+  useMongoClient: true
+});
 
 
 // Start the server
