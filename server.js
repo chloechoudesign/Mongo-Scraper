@@ -13,7 +13,8 @@ var request = require("request");
 var db = require("./models");
 
 // Initialize Express
-var PORT = 3000;
+var PORT = process.env || 3000;
+
 var app = express();
 
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
